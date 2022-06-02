@@ -1,19 +1,16 @@
 {
   "compilerOptions": {
     "module": "commonjs",
-    "noImplicitReturns": true,
-    "noUnusedLocals": true,
     "outDir": "./dist",
     "sourceMap": true,
-    "strict": true,
-    "target": "es2017",
+    "target": "es6",
     "resolveJsonModule": true,
     "moduleResolution": "node",
-    "pretty": true, 
+    "pretty": true,
     "experimentalDecorators": true,
+    "strict": true
   },
   "compileOnSave": true,
   "include": ["src/**/*.ts"],
   "exclude": ["node_modules"]
 }
-

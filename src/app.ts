@@ -1,10 +1,13 @@
+import * as bodyParser from 'body-parser';
 import * as cors from 'cors';
 import * as express from 'express';
 import * as admin from 'firebase-admin';
-import * as functions from "firebase-functions";
 import * as serviceAccount from './../service-account-key.json';
 import * as dotenv from 'dotenv';
-import { testController } from './controllers/test.controller';
+import * as http from 'http';
+import { appResultsRouter } from './routes/results.routes';
+import { appQuizRouter } from './routes/quiz.routes';
+import { Request, Response } from 'express';
 
 // Init
 dotenv.config();
@@ -12,27 +15,41 @@ dotenv.config();
 admin.initializeApp({
   credential: admin.credential.cert({
     clientEmail: serviceAccount.client_email,
-    privateKey: process.env.FIREBASE_PRIVATE_KEY!.replace(/\\n/g, '\n'),
+    privateKey: process.env.FIREBASE_PRIVATE_KEY?.replace(/\\n/g, '\n'),
     projectId: serviceAccount.project_id,
   }),
   storageBucket: 'gs://quiz-dev-ddd1b.appspot.com',
 });
 export const db = admin.firestore();
+class App {
+  public app: express.Application;
+  public server: http.Server;
 
-const createTest = express();
-const getTest = express();
-const getResults = express();
+  constructor() {
+    this.app = express();
+    this.server = http.createServer(this.app);
+    //appSocketService.init(this.server);
+    this.config();
+  }
 
-createTest.use(cors({ origin: true }));
-getTest.use(cors({ origin: true }));
-getResults.use(cors({ origin: true }));
+  private config(): void {
+    this.app.use(bodyParser.json());
 
-// Functions
-createTest.get("/", testController.createTest);
-getTest.get("/", testController.getTest);
-getResults.get("/", testController.getResults);
+    const corsOptions: cors.CorsOptions = {
+      origin: ['http://localhost:4200'],
+    };
+    this.app.use(cors(corsOptions));
 
-// Exports api to the firebase cloud functions
-exports.createTest = functions.https.onRequest(createTest);
-exports.getTest = functions.https.onRequest(getTest);
-exports.getResults = functions.https.onRequest(getResults);
+    this.app.use('/quiz', appQuizRouter);
+    this.app.use('/results', appResultsRouter);
+    // eslint-disable-next-line
+    this.app.use((err: any, req: Request, res: Response, next: any) => {
+      if (err) {
+        res.status(500).send('Something went wrong!');
+      }
+    });
+  }
+}
+
+const app = new App();
+export default app;
