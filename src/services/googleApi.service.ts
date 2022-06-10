@@ -2,13 +2,11 @@ import { ResultValues } from '../interfaces/result';
 const path = require('path');
 import * as google from '@googleapis/forms';
 
-//const PORT = process.env.PORT || 8081;
-
 class GoogleApiService {
   public async getGoogleFormResponse({ formId, responseId }: ResultValues) {
     console.log('google: ');
     const auth = await new google.auth.GoogleAuth({
-      keyFile: path.resolve(__dirname, 'credentials.json'),
+      keyFile: path.resolve(process.cwd(), 'credentials.json'),
       scopes: ['https://www.googleapis.com/auth/forms', 'https://www.googleapis.com/auth/forms.responses.readonly'],
     });
 
