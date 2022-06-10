@@ -1,15 +1,13 @@
-interface Question {
-  title: string;
-  isCorrect: boolean;
-  timeSpent: number;
+export interface PassingTestValues {
+  email: string;
+  name: string;
+  result: ResultValues;
+  status: string;
+  surname: string;
+  testId: string;
 }
 
-export interface Result {
-  creator: string;
-  name: string;
-  date: string;
-  numberOfQuestions: number;
-  technologies: string[];
-  evaluation: string;
-  questions: Question[];
+export interface ResultValues {
+  formId: string;
+  responseId: string;
 }

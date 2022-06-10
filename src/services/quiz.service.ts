@@ -1,4 +1,5 @@
 import { QuizFieldsValues } from '../interfaces/quiz';
+import { PassingTestValues, ResultValues } from '../interfaces/result';
 import { db as database } from './../app';
 
 class QuizService {
@@ -39,15 +40,29 @@ class QuizService {
     };
   }
 
-  public async getResults() {
-    const response = await database.collection('results').get();
-    const results = response.docs.map(doc => {
-      const data = doc.data();
-      return data;
-    });
+  public async getResult(passingTestId: string): Promise<ResultValues> {
+    const doc = await database.collection('passing').doc(passingTestId).get();
 
-    return results;
+    return (doc.data() as PassingTestValues).result;
+  }
+
+  public async setResults(results: { [key: string]: string }) {
+    database
+      .collection('passing')
+      .where('email', '==', results.email)
+      .where('status', '==', 'going')
+      .get()
+      .then(querySnapshot => {
+        querySnapshot.forEach(doc => {
+          doc.ref.update({
+            result: {
+              formId: results.formId,
+              responseId: results.responseId,
+            },
+          });
+        });
+      });
   }
 }
 
-export const testService = new QuizService();
+export const quizService = new QuizService();

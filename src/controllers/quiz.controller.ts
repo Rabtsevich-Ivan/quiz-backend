@@ -1,12 +1,13 @@
 import { Request, Response } from 'express';
 import { sendError } from '../core/response-helper';
-import { testService } from './../services/quiz.service';
+import { googleApiService } from '../services/googleApi.service';
+import { quizService } from './../services/quiz.service';
 
 export class AppQuizController {
   public async createQuiz(req: Request, res: Response): Promise<void> {
     //const { creator, name, surname, numberOfQuestions, technologies, formTitle, formDescription, formLink } = req.body;
     try {
-      const testId = await testService.createQuiz({
+      const testId = await quizService.createQuiz({
         creator: 'testCreator',
         name: 'Me',
         surname: 'Creator',
@@ -27,7 +28,7 @@ export class AppQuizController {
 
   public async getQuiz(req: Request, res: Response): Promise<void> {
     try {
-      const testData = await testService.getQuiz(req.body.testId);
+      const testData = await quizService.getQuiz(req.body.testId);
 
       res.status(200).send({
         status: 'Success',
@@ -42,12 +43,33 @@ export class AppQuizController {
 
   public async getResults(req: Request, res: Response): Promise<void> {
     try {
-      const results = await testService.getResults();
+      const result = await quizService.getResult(req.body.passingTestId);
+
+      const response = await googleApiService.getGoogleFormResponse(result);
+
+      console.log(response);
+
+      res.status(200).send({ status: 'Success', data: response });
+      return;
+    } catch (error) {
+      sendError(res, 'Failed getting results', 500);
+      console.log(error)
+      return;
+    }
+  }
+
+  public async setResultsWebhook(req: Request, res: Response): Promise<void> {
+    try {
+      const results = req.body;
+
+      console.log(results);
+
+      quizService.setResults(results);
 
       res.status(200).send({ status: 'Success', data: results });
       return;
     } catch (error) {
-      sendError(res, 'Failed getting results', 500);
+      console.log('Error setting results');
       return;
     }
   }

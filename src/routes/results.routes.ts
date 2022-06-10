@@ -5,4 +5,6 @@ import { catchRoute } from '../core/catch-route';
 export const appResultsRouter = Router({ mergeParams: true });
 const appQuizController = new AppQuizController();
 
-appResultsRouter.get('/get', catchRoute(appQuizController.getResults));
+appResultsRouter.post('/get', catchRoute(appQuizController.getResults));
+appResultsRouter.post('/set', catchRoute(appQuizController.setResultsWebhook));
+
