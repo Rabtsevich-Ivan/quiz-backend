@@ -27,7 +27,6 @@ class App {
   constructor() {
     this.app = express();
     this.server = http.createServer(this.app);
-    //appSocketService.init(this.server);
     this.config();
   }
 
@@ -41,20 +40,6 @@ class App {
 
     this.app.use('/quiz', appQuizRouter);
     this.app.use('/results', appResultsRouter);
-
-    // this.app.use('/form', async (req, res) => {
-    //   try {
-    //     const forms = google.forms({
-    //       version: 'v1',
-    //       auth: auth,
-    //     });
-    //     const res = await forms.forms.responses.get({
-    //       formId: formID,
-
-    //       responseId: responseID,
-    //     });
-    //   } catch (error) {}
-    // });
 
     // eslint-disable-next-line
     this.app.use((err: any, req: Request, res: Response, next: any) => {

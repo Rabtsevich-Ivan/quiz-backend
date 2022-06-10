@@ -18,6 +18,22 @@ class GoogleApiService {
       formId: formId,
     });
 
+    interface GoogleFormResponse {
+      answers: any;
+      createTime: string;
+      lastSubmittedTime: string;
+      respondentEmail: string;
+      responseId: string;
+      totalScore: number;
+    }
+
+    const sortedResponses = res.data.responses?.sort((a: any, b: any) =>
+      new Date(a.lastSubmittedTime).getTime() > new Date(b.lastSubmittedTime).getTime() ? -1 : 1,
+    );
+    const lastResponse = (sortedResponses && sortedResponses[0]) || [];
+
+    //const grade = (lastResponse?.totalScore / Object.keys(lastResponse?.answers).length) * 5;
+
     console.log('resp: ', res.data);
 
     return res.data;
