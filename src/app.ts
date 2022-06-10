@@ -35,7 +35,7 @@ class App {
     this.app.use(bodyParser.json());
 
     const corsOptions: cors.CorsOptions = {
-      origin: ['http://localhost:4200', 'http://localhost:3000'],
+      origin: ['http://localhost:4200', 'http://localhost:3000', 'https://protected-caverns-06414.herokuapp.com'],
     };
     this.app.use(cors(corsOptions));
 
