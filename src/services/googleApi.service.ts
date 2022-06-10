@@ -32,6 +32,7 @@ class GoogleApiService {
     );
     const lastResponse = (sortedResponses && sortedResponses[0]) || [];
 
+    //Property 'totalScore' does not exist on type 'Schema$FormResponse | never[]'
     //const grade = (lastResponse?.totalScore / Object.keys(lastResponse?.answers).length) * 5;
 
     console.log('resp: ', res.data);
