@@ -40,13 +40,13 @@ class QuizService {
     };
   }
 
-  public async getResult(passingTestId: string): Promise<ResultValues> {
+  public async getResultReference(passingTestId: string): Promise<ResultValues> {
     const doc = await database.collection('passing').doc(passingTestId).get();
 
     return (doc.data() as PassingTestValues).result;
   }
 
-  public async setResults(results: { [key: string]: string }) {
+  public async setResultReference(results: { [key: string]: string }) {
     database
       .collection('passing')
       .where('email', '==', results.email)
@@ -62,6 +62,10 @@ class QuizService {
           });
         });
       });
+  }
+
+  public async storeResult(result: any) {
+    database.collection('results').add(result);
   }
 }
 

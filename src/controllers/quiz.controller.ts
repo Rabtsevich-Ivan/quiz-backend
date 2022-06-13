@@ -41,11 +41,13 @@ export class AppQuizController {
     }
   }
 
-  public async getResults(req: Request, res: Response): Promise<void> {
+  public async handleResults(req: Request, res: Response): Promise<void> {
     try {
-      const result = await quizService.getResult(req.body.passingTestId);
+      const resultReference = await quizService.getResultReference(req.body.passingTestId);
 
-      const response = await googleApiService.getGoogleFormResponse(result);
+      const response = await googleApiService.getGoogleFormResponse(resultReference);
+
+      quizService.storeResult(response);
 
       console.log(response);
 
@@ -53,7 +55,7 @@ export class AppQuizController {
       return;
     } catch (error) {
       sendError(res, 'Failed getting results', 500);
-      console.log(error)
+      console.log(error);
       return;
     }
   }
@@ -64,7 +66,7 @@ export class AppQuizController {
 
       console.log(results);
 
-      quizService.setResults(results);
+      quizService.setResultReference(results);
 
       res.status(200).send({ status: 'Success', data: results });
       return;
